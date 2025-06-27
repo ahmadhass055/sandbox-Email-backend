@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/email-with-attachment.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/email-with-attachment",
+      "methods": ["POST"],
+      "dest": "api/email-with-attachment.js"
+    }
+  ]
+}
