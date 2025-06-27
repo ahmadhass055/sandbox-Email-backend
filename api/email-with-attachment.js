@@ -2,11 +2,8 @@ const multer = require("multer");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 const fs = require("fs");
-const path = require("path");
 
 dotenv.config();
-
-// Setup multer
 const upload = multer({ dest: "/tmp/" });
 
 function runMiddleware(req, res, fn) {
@@ -20,7 +17,7 @@ function runMiddleware(req, res, fn) {
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    return res.status(405).json({ message: "Only POST method allowed" });
   }
 
   await runMiddleware(req, res, upload.single("file"));
@@ -55,10 +52,10 @@ module.exports = async (req, res) => {
       ],
     });
 
-    fs.unlinkSync(file.path); // cleanup temp file
+    fs.unlinkSync(file.path);
     res.status(200).json({ message: "Email sent successfully." });
   } catch (error) {
-    console.error("Email error:", error);
+    console.error(error);
     res.status(500).json({ message: "Failed to send email." });
   }
 };
