@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const fs = require("fs");
 
 dotenv.config();
+
+// Use temp storage for Vercel
 const upload = multer({ dest: "/tmp/" });
 
 function runMiddleware(req, res, fn) {
@@ -17,7 +19,7 @@ function runMiddleware(req, res, fn) {
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Only POST method allowed" });
+    return res.status(405).json({ message: "Only POST allowed" });
   }
 
   await runMiddleware(req, res, upload.single("file"));
@@ -26,7 +28,7 @@ module.exports = async (req, res) => {
   const file = req.file;
 
   if (!email || !file) {
-    return res.status(400).json({ message: "Email and file are required." });
+    return res.status(400).json({ message: "Email and file required" });
   }
 
   try {
@@ -52,10 +54,10 @@ module.exports = async (req, res) => {
       ],
     });
 
-    fs.unlinkSync(file.path);
-    res.status(200).json({ message: "Email sent successfully." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Failed to send email." });
+    fs.unlinkSync(file.path); // cleanup
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ message: "Failed to send email" });
   }
 };
